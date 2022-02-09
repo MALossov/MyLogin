@@ -1,0 +1,47 @@
+.kuang {
+    position: relative;
+    width: 380px;
+    height: 60px;
+    border-radius: 5px;
+    /*  background-color: rgba(204, 197, 197,.5); */
+    box-shadow: inset 5px 5px 10px rgba(204, 197, 197, .5), inset -5px -5px 8px rgba(204, 197, 197, .5);
+}
+
+.kuang input {
+    position: absolute;
+    top: 0;
+    left: 20px;
+    height: 100%;
+    width: 300px;
+    font-size: 18px;
+    outline: none;
+    border: none;
+    background-color: transparent;
+}
+
+.kuang input::placeholder {
+    color: rgba(68, 67, 67, .8);
+}
+
+.conceal {
+    position: relative;
+    top: -45px;
+    left: 130px;
+    width: 30px;
+    height: 30px;
+    background-image: url(./img/PasswordHide.png);
+    background-size: 100% 100%;
+    cursor: pointer;
+}
+
+.conceal.yincang {
+    background-image: url(./img/PasswordShow.png);
+    background-size: 100% 100%;
+}
+
+.Status {
+    font-size: x-small;
+    color: tan;
+    margin: 0;
+    margin-bottom: 0rem;
+}
