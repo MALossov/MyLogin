@@ -21,7 +21,9 @@
 
 ## 运行方法
 运行命令生成war：
+
 > mvn clean package
+
 然后*Mylogin.war*文件扔TomCat上就行，访问地址为:**/MyLogin**
 ## 运行的环境
 - iDea写的
