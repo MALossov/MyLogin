@@ -14,8 +14,6 @@ import java.util.Arrays;
 import static java.nio.charset.StandardCharsets.ISO_8859_1;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import com.Cloud.JdbcSubModule;
-
 
 //扩展 HttpServlet 类
 @WebServlet(value = "/MyCloud",name = "MainResponse")
@@ -28,7 +26,7 @@ public class DisplayHeader extends HttpServlet {
 
 
 
-        PrintWriter out = response.getWriter();
+       PrintWriter out = response.getWriter();
         String title = "使用 GET 方法读取表单数据";
         // 处理中文
         //举例：var SignUPRequest = "?Choice=SignUP&email=" + emailSU + '&usrname=' + usrNameSU + '&psd=' + pwdSU;

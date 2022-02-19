@@ -60,18 +60,20 @@ public class JdbcSubModule {
 
     private static String SignIN(Connection conn) throws SQLException {
         String usr;
-        try(PreparedStatement ps=conn.prepareStatement("select * from userdata where Email = ? and Password = ?")){
-            ps.setObject(1,testEmail);
-            ps.setObject(2,testPassword);
-            ResultSet rst = ps.executeQuery();
-            if(rst.next()){
+        try (Statement ps = conn.createStatement()) {
+            String sql = String.format("select * from userdata where Email = '%s' and Password = '%s'"
+                    , testEmail
+                    , testPassword);
+            System.out.println(sql);
+            ResultSet rst = ps.executeQuery(sql);
+            if (rst.next()) {
                 int id = rst.getInt("Number");
                 String UserName = rst.getString("UserName");
                 String Password = rst.getString("Password");
                 String email = rst.getString("Email");
-                usr=String.join("~~",String.valueOf(id),UserName,Password ,email,"NormalLogin","Old User");
-                System.out.println("Geted user signed in:" +usr);
-            }else {
+                usr = String.join("~~", String.valueOf(id), UserName, Password, email, "NormalLogin", "Old User");
+                System.out.println("Geted user signed in:" + usr);
+            } else {
                 return "Wrong!";
             }
         }
@@ -84,10 +86,9 @@ public class JdbcSubModule {
         int crtNum = -1;
         String InsUsr;
 
-        try(PreparedStatement ps=conn.prepareStatement("select * from userdata where Email = ? or UserName = ?")) {
-            ps.setObject(1, testEmail);
-            ps.setObject(2, testUsr);
-            ResultSet rst = ps.executeQuery();
+        try (Statement ps = conn.createStatement()) {
+            String sql = String.format("select * from userdata where Email = '%s' or UserName = '%s'", testEmail, testUsr);
+            ResultSet rst = ps.executeQuery(sql);
             //if(rst.next()){
             while (rst.next()) {
                 crtNum = rst.getInt("Number");
@@ -96,7 +97,7 @@ public class JdbcSubModule {
                 String email = rst.getString("Email");
                 System.out.println("Geted old usr change pwd :" + String.join(",", String.valueOf(crtNum), UserName, Password, email));
                 if (!(email.equals(testEmail) && UserName.equals(testUsr))) {
-                    System.out.println("Geted usrname:"+UserName+" but "+testUsr+","+email+" but "+testEmail);
+                    System.out.println("Geted usrname:" + UserName + " but " + testUsr + "," + email + " but " + testEmail);
                     System.out.println("Unpaired UsrName&Email wrong!\n");
                     crtNum=-1;
                     return "Wrong!";
@@ -105,32 +106,29 @@ public class JdbcSubModule {
             }
         }
 
-        if(crtNum != -1){
-            try (PreparedStatement psRep = conn.prepareStatement("UPDATE `myclouddrive`.`userdata` SET `Password` = ? WHERE (`Number` = ?)")){
-                psRep.setObject(1,testPassword);
-                psRep.setObject(2,crtNum);
-                psRep.executeUpdate(); // 1
-            }
-        }else{
-        //进行一个用户的搜索
-        try (PreparedStatement psFindLast = conn.prepareStatement("select Number from `myclouddrive`.`userdata` order by Number desc limit 1")){
-            ResultSet rstFind = psFindLast.executeQuery();
-            rstFind.next();
-            FinalNum = rstFind.getInt("Number");
-            FinalNum++;
-            System.out.println("The insert number should be:"+ FinalNum);
-        }
+        if(crtNum != -1) {
+            try (Statement psRep = conn.createStatement()) {
+                String sql = String.format("UPDATE `myclouddrive`.`userdata` SET `Password` = '%s' WHERE (`Number` = '%s')", testPassword, crtNum);
 
-        //开始插入用户
-        try (PreparedStatement psIns = conn.prepareStatement(
-                "INSERT INTO myclouddrive.userdata (Number, UserName,Password, Email) VALUES (?,?,?,?)",
-                Statement.RETURN_GENERATED_KEYS)) {
-            psIns.setObject(1, FinalNum);
-            psIns.setObject(2, testUsr);
-            psIns.setObject(3, testPassword);
-            psIns.setObject(4, testEmail);
-            //InsUsr = String.join(",",String.valueOf(id),UserName,Password,email);
-            psIns.executeUpdate(); // 1
+                psRep.executeUpdate(sql); // 1
+            }
+        }else {
+            //进行一个用户的搜索
+            //todo:select Number from `myclouddrive`.`userdata` order by Number desc limit 1
+            try (Statement psFindLast = conn.createStatement()) {
+                ResultSet rstFind = psFindLast.executeQuery("select max(Number) as aa from userdata;");
+                rstFind.next();
+                FinalNum = rstFind.getInt("aa");
+                FinalNum++;
+                System.out.println("The insert number should be:" + FinalNum);
+            }
+
+            //开始插入用户
+            try (Statement psIns = conn.createStatement(
+            )) {
+                String sql = String.format("INSERT INTO myclouddrive.userdata (Number, UserName,Password, Email) VALUES ('%s','%s','%s','%s')",
+                        FinalNum, testUsr, testPassword, testEmail);
+                psIns.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS); // 1
             }
         }
             InsUsr = String.join("~~",String.valueOf(FinalNum),testUsr,testPassword,testEmail);
