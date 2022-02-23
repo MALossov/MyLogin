@@ -9,14 +9,6 @@ Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://j
 Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
 ```markdown
-<!--
- * @Description: SIMPLE LOGIN PAGE DESCRIPTION
- * @Author: MALossov
- * @Date: 2022-02-09 21:25:42
- * @LastEditTime: 2022-02-09 21:36:44
- * @LastEditors: MALossov
- * @Reference: 
--->
 # MyLogin
 
 ## 简单介绍
